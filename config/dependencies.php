@@ -9,6 +9,22 @@
  */
 $container = $app->getContainer();
 
+$container['notAllowedHandler'] = function () {
+    return new \Chanshige\WhoisProxy\Handler\NotAllowedHandler();
+};
+
+$container['errorHandler'] = function () {
+    return new \Chanshige\WhoisProxy\Handler\BadRequestHandler();
+};
+
+$container['phpErrorHandler'] = function () {
+    return new \Chanshige\WhoisProxy\Handler\ApiErrorHandler();
+};
+
+$container['phpErrorHandler'] = function () {
+    return new \Chanshige\WhoisProxy\Handler\ApiErrorHandler();
+};
+
 $container['logger'] = function () {
     $rotating = new \Monolog\Handler\RotatingFileHandler(env('APP_LOG_FILENAME'));
     $rotating->setFormatter((new \Monolog\Formatter\LineFormatter(env('APP_LOG_FORMAT'), null, true, true)));

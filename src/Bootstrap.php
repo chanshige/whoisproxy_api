@@ -25,7 +25,7 @@ final class Bootstrap
         $container['cache_enable'] = env('CACHE_ENABLE', false);
 
         require APP_DIR . 'config/dependencies.php';
-        require APP_DIR . 'config/handlers.php';
+        require APP_DIR . 'config/resources.php';
         require APP_DIR . 'route/api.php';
 
         $this->app = $app;
