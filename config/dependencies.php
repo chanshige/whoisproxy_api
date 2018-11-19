@@ -21,7 +21,7 @@ $container['phpErrorHandler'] = function () {
     return new \Chanshige\WhoisProxy\Handler\ApiErrorHandler();
 };
 
-$container['phpErrorHandler'] = function () {
+$container['notFoundHandler'] = function () {
     return new \Chanshige\WhoisProxy\Handler\ApiErrorHandler();
 };
 
