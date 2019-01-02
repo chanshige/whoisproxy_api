@@ -45,7 +45,7 @@ function env($key, $default = null)
  *
  * @return string
  */
-function buildQuery(): string
+function http_build_query_args(): string
 {
     $ret = [];
     foreach (func_get_args() as $value) {
