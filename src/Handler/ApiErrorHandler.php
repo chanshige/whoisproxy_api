@@ -17,12 +17,12 @@ final class ApiErrorHandler
     /**
      * @var int status code
      */
-    private $statusCode = StatusCode::HTTP_NOT_FOUND;
+    private $statusCode = StatusCode::HTTP_FORBIDDEN;
 
     /**
      * @var string api response message.
      */
-    private $message = 'Not Found...';
+    private $message = 'Forbidden';
 
     /**
      * @param Request  $request

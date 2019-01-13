@@ -18,6 +18,7 @@ $dotenv->load();
 $settings['settings'] = [
     'displayErrorDetails' => env('DISPLAY_ERROR_DETAILS', false),
     'addContentLengthHeader' => env('ADD_CONTENT_LENGTH_HEADER', false),
+    'determineRouteBeforeAppMiddleware' => env('DETERMINE_ROUTE_BEFORE_APP_MIDDLEWARE', true),
 ];
 
 $app = (new \Chanshige\WhoisProxy\Bootstrap(new \Slim\App()))->get();

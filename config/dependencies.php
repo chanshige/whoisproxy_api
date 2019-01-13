@@ -27,7 +27,14 @@ $container['notFoundHandler'] = function () {
 
 $container['logger'] = function () {
     $rotating = new \Monolog\Handler\RotatingFileHandler(env('APP_LOG_FILENAME'));
-    $rotating->setFormatter((new \Monolog\Formatter\LineFormatter(env('APP_LOG_FORMAT'), null, true, true)));
+    $rotating->setFormatter(
+        new \Monolog\Formatter\LineFormatter(
+            env('APP_LOG_FORMAT'),
+            null,
+            true,
+            true
+        )
+    );
 
     $logger = new \Monolog\Logger(env('APP_NAME'));
     $logger->pushHandler($rotating);
@@ -44,5 +51,5 @@ $container['file_cache'] = function () {
 };
 
 $container['whois'] = function () {
-    return new Chanshige\Whois(new \Chanshige\Handler\Socket());
+    return new Chanshige\Whois();
 };
