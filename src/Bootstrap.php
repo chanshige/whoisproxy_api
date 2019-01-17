@@ -22,7 +22,6 @@ final class Bootstrap
     {
         $container = $app->getContainer();
         $container['debug'] = env('DEBUG_MODE', false);
-        $container['cache_enable'] = env('CACHE_ENABLE', false);
 
         require APP_DIR . 'config/dependencies.php';
         require APP_DIR . 'config/resources.php';

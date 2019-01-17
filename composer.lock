@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7bdd061dec7508f752b1530d8ab3d908",
+    "content-hash": "d990262345e02cb59493b6d929cc503b",
     "packages": [
         {
             "name": "chanshige/slim-bodycache",
@@ -62,16 +62,16 @@
         },
         {
             "name": "chanshige/whois",
-            "version": "v2.1.0",
+            "version": "v2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/chanshige/whois.git",
-                "reference": "ebf2e04f034bb08537ec132da15a64434e86fd51"
+                "reference": "7133cd7e6864e6fa07b0aad5370d1d4fd5244901"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/chanshige/whois/zipball/ebf2e04f034bb08537ec132da15a64434e86fd51",
-                "reference": "ebf2e04f034bb08537ec132da15a64434e86fd51",
+                "url": "https://api.github.com/repos/chanshige/whois/zipball/7133cd7e6864e6fa07b0aad5370d1d4fd5244901",
+                "reference": "7133cd7e6864e6fa07b0aad5370d1d4fd5244901",
                 "shasum": ""
             },
             "require": {
@@ -108,7 +108,7 @@
                 "nic",
                 "whois"
             ],
-            "time": "2019-01-10T16:41:34+00:00"
+            "time": "2019-01-17T10:38:25+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -781,16 +781,16 @@
         },
         {
             "name": "slim/slim",
-            "version": "3.11.0",
+            "version": "3.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/slimphp/Slim.git",
-                "reference": "d378e70431e78ee92ee32ddde61ecc72edf5dc0a"
+                "reference": "f4947cc900b6e51cbfda58b9f1247bca2f76f9f0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/slimphp/Slim/zipball/d378e70431e78ee92ee32ddde61ecc72edf5dc0a",
-                "reference": "d378e70431e78ee92ee32ddde61ecc72edf5dc0a",
+                "url": "https://api.github.com/repos/slimphp/Slim/zipball/f4947cc900b6e51cbfda58b9f1247bca2f76f9f0",
+                "reference": "f4947cc900b6e51cbfda58b9f1247bca2f76f9f0",
                 "shasum": ""
             },
             "require": {
@@ -848,7 +848,7 @@
                 "micro",
                 "router"
             ],
-            "time": "2018-09-16T10:54:21+00:00"
+            "time": "2019-01-15T13:21:25+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -2053,16 +2053,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "7.5.1",
+            "version": "7.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "c23d78776ad415d5506e0679723cb461d71f488f"
+                "reference": "7c89093bd00f7d5ddf0ab81dee04f801416b4944"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/c23d78776ad415d5506e0679723cb461d71f488f",
-                "reference": "c23d78776ad415d5506e0679723cb461d71f488f",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/7c89093bd00f7d5ddf0ab81dee04f801416b4944",
+                "reference": "7c89093bd00f7d5ddf0ab81dee04f801416b4944",
                 "shasum": ""
             },
             "require": {
@@ -2133,7 +2133,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2018-12-12T07:20:32+00:00"
+            "time": "2019-01-15T08:19:08+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -3091,11 +3091,11 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.2.0",
+        "php": ">=7.3.0",
         "ext-json": "*"
     },
     "platform-dev": [],
     "platform-overrides": {
-        "php": "7.2.0"
+        "php": "7.3.0"
     }
 }

@@ -30,13 +30,12 @@ final class Whois
     /**
      * @param Request  $request
      * @param Response $response
-     * @param string   $domain
      * @return Response
      */
-    public function __invoke(Request $request, Response $response, string $domain)
+    public function __invoke(Request $request, Response $response)
     {
         try {
-            $this->whois->query($domain, '');
+            $this->whois->query($request->getAttribute('domain'), '');
 
             return $response->withJson(
                 $this->whois->results(),

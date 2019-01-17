@@ -36,28 +36,28 @@ $app->group("/v1", function () use ($app, $container) {
         "/{type}/{domain}",
         function (Request $request, Response $response, array $args) use ($container) {
             $handler = $container->get('handler:json');
-
+            // validation
             if ($request->getAttribute('has_errors', false)) {
                 $response = $response->withJson($request->getAttribute('errors'));
                 return $handler($request, $response, StatusCode::HTTP_FORBIDDEN);
             }
-
+            // cache
             if ($request->getAttribute('has_body_cache', false)) {
                 return $response->withJson(json_decode((string)$response->getBody()));
             }
 
-            $resource = $container->get("resource:{$args['type']}");
+            $request = $request->withAttribute('domain', $args['domain']);
+            $response = $container->get("resource:{$args['type']}")($request, $response);
 
-            return $handler($request, $resource($request, $response, $args['domain']));
+            return $handler($request, $response);
         }
     )->add(
         function (Request $request, Response $response, $next) use ($container) {
-            if (!$container->get('cache_enable') || $request->getAttribute('has_errors')) {
+            if ($request->getAttribute('has_errors')) {
                 return $next($request, $response);
             }
-            $cache = $container->get('middleware:cache');
 
-            return $cache($request, $response, $next);
+            return $container->get('middleware:cache')($request, $response, $next);
         }
     )->add($container->get('validation:route'));
 });

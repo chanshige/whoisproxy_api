@@ -18,7 +18,7 @@
     "chanshige/slim-bodycache": "*",
     "davidepastore/slim-validation": "*",
     "monolog/monolog": "^1.23",
-    "chanshige/whois": "^2.1.0",
+    "chanshige/whois": "^2.2.0",
     "symfony/cache": "^4.0",
     "symfony/process": "^4.0",
     "swiftmailer/swiftmailer": "^6.1",
@@ -34,7 +34,6 @@
       "extend.function.php"
     ],
     "psr-4": {
-      "Exception\\": "src/Exception/",
       "Chanshige\\WhoisProxy\\": "src/"
     }
   },

@@ -1,6 +1,13 @@
 <?php
 namespace Chanshige\WhoisProxy\Middleware;
 
+use Psr\Http\Message\ResponseInterface;
+
+/**
+ * Class SimpleCors
+ *
+ * @package Chanshige\WhoisProxy\Middleware
+ */
 final class SimpleCors implements MiddlewareInterface
 {
     /** @var string */
@@ -24,6 +31,7 @@ final class SimpleCors implements MiddlewareInterface
      */
     public function __invoke($request, $response, $next)
     {
+        /** @var ResponseInterface $response */
         $response = $next($request, $response);
 
         return $response
