@@ -13,3 +13,7 @@ $container = $app->getContainer();
 $container['resource:whois'] = function () use ($container) {
     return new \Chanshige\WhoisProxy\Resource\Whois($container->get('whois'));
 };
+
+$container['resource:dig'] = function () {
+    return new \Chanshige\WhoisProxy\Resource\Dig();
+};
