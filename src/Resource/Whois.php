@@ -32,7 +32,7 @@ final class Whois
      * @param Response $response
      * @return Response
      */
-    public function __invoke(Request $request, Response $response)
+    public function __invoke(Request $request, Response $response): Response
     {
         try {
             $this->whois->query($request->getAttribute('domain'), '');
