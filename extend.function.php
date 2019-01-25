@@ -39,17 +39,3 @@ function env($key, $default = null)
             break;
     }
 }
-
-/**
- * Build http query.
- *
- * @return string
- */
-function http_build_query_args(): string
-{
-    $ret = [];
-    foreach (func_get_args() as $value) {
-        $ret += $value;
-    }
-    return http_build_query($ret, '', "&");
-}

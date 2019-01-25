@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @package Chanshige\WhoisProxy
  */
-class CommonTestCase extends TestCase
+abstract class CommonTestCase extends TestCase
 {
     protected $expected;
 
