@@ -17,6 +17,7 @@ final class SimpleCors implements MiddlewareInterface
      * SimpleCors constructor.
      *
      * @param string $origin
+     * @return void
      */
     public function __construct(string $origin)
     {

@@ -35,6 +35,7 @@ $app->group("/v1", function () use ($app, $container) {
     $app->get(
         "/{type}/{domain}",
         function (Request $request, Response $response, array $args) use ($container) {
+            $this->logger->info('route', $request->getAttributes());
             $handler = $container->get('handler:json');
             // validation
             if ($request->getAttribute('has_errors', false)) {
@@ -46,10 +47,10 @@ $app->group("/v1", function () use ($app, $container) {
                 return $response->withJson(json_decode((string)$response->getBody()));
             }
 
+            $resource = $container->get("resource:{$args['type']}");
             $request = $request->withAttribute('domain', $args['domain']);
-            $response = $container->get("resource:{$args['type']}")($request, $response);
 
-            return $handler($request, $response);
+            return $handler($request, $resource($request, $response));
         }
     )->add(
         function (Request $request, Response $response, $next) use ($container) {

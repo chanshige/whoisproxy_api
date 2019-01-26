@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Chanshige\WhoisProxy\Handler;
 
 use Slim\Http\Request;
@@ -18,14 +20,14 @@ final class JsonHandler
      * @param int|null $code
      * @return Response
      */
-    public function __invoke(Request $request, Response $response, $code = null)
+    public function __invoke(Request $request, Response $response, ?int $code = null)
     {
         $status = $code ?? $response->getStatusCode();
         $result = [
             "method" => $request->getMethod(),
             "code" => $status,
             "state" => ($status === StatusCode::HTTP_OK ? "success" : "fail"),
-            "results" => json_decode($response->getBody(), true)
+            "results" => json_decode((string)$response->getBody(), true)
         ];
 
         return $response->withJson($result, $status);

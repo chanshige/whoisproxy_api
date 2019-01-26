@@ -62,7 +62,7 @@ $container['middleware:cache'] = function () use ($container) {
 };
 
 $container['middleware:cors'] = function () use ($container) {
-    return new \Chanshige\WhoisProxy\Middleware\SimpleCors(env('API_URL'));
+    return new \Chanshige\WhoisProxy\Middleware\SimpleCors(env('ALLOW_ORIGIN'));
 };
 
 $container['handler:json'] = function () {
