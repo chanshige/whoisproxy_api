@@ -45,7 +45,7 @@ $container['logger'] = function () {
     return $logger;
 };
 
-$container['fileCache'] = function () {
+$container['fileSystemCache'] = function () {
     return new \Symfony\Component\Cache\Simple\FilesystemCache(
         env('CACHE_DIR_NAMESPACE'),
         env('CACHE_LIFETIME'),
@@ -58,7 +58,7 @@ $container['whois'] = function () {
 };
 
 $container['middleware:cache'] = function () use ($container) {
-    return new Chanshige\Slim\BodyCache\Cache($container->get('fileCache'));
+    return new Chanshige\Slim\BodyCache\Cache($container->get('fileSystemCache'));
 };
 
 $container['middleware:cors'] = function () use ($container) {

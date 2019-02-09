@@ -20,9 +20,6 @@ final class Bootstrap
      */
     public function __construct(App $app)
     {
-        $container = $app->getContainer();
-        $container['debug'] = env('DEBUG_MODE', false);
-
         require APP_DIR . 'config/dependencies.php';
         require APP_DIR . 'config/resources.php';
         require APP_DIR . 'route/api.php';

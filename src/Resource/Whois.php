@@ -45,7 +45,7 @@ final class Whois
         } catch (InvalidQueryException $e) {
             return $response->withJson(
                 $e->getMessage(),
-                $e->getCode(),
+                StatusCode::HTTP_FORBIDDEN,
                 JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
             );
         }
