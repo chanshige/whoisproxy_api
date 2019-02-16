@@ -32,7 +32,7 @@ $container['logger'] = function () {
     $rotating = new \Monolog\Handler\RotatingFileHandler(env('APP_LOG_FILENAME'));
     $rotating->setFormatter(
         new \Monolog\Formatter\LineFormatter(
-            env('APP_LOG_FORMAT'),
+            "[%datetime%] [%level_name%]: %message% %context%\n",
             null,
             true,
             true

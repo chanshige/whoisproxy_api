@@ -71,6 +71,8 @@ final class Dig
             }
             $result[] = trim(str_replace(["\t", '"'], ' ', $value));
         }
+        // <<>> DiG...は不要
+        array_shift($result);
 
         return $result;
     }
