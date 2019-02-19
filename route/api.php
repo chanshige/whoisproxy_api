@@ -9,7 +9,7 @@
  */
 
 use Slim\Http\Request;
-use Slim\Http\Response;
+use Chanshige\WhoisProxy\Http\Response;
 use Slim\Http\StatusCode;
 
 $container = $app->getContainer();
@@ -20,12 +20,11 @@ $app->add($container->get('middleware:cors'));
  *  Root Access is not allow.
  */
 $app->get("/", function (Request $request, Response $response) use ($container) {
-    $response = $response->withJson(
+    return $response->withHalJson(
         'Bad Request',
+        ['self' => ["href" => $request->getUri()->getPath()]],
         StatusCode::HTTP_BAD_REQUEST
     );
-
-    return $container->get('handler:json')($request, $response);
 });
 
 /**
@@ -36,21 +35,22 @@ $app->group("/v1", function () use ($app, $container) {
         "/{type}/{domain}",
         function (Request $request, Response $response, array $args) use ($container) {
             $this->logger->info('route', $request->getAttributes());
-            $handler = $container->get('handler:json');
             // validation
             if ($request->getAttribute('has_errors', false)) {
-                $response = $response->withJson($request->getAttribute('errors'));
-                return $handler($request, $response, StatusCode::HTTP_FORBIDDEN);
+                return $response->withHalJson(
+                    $request->getAttribute('errors'),
+                    ['self' => ["href" => $request->getUri()->getPath()]],
+                    StatusCode::HTTP_FORBIDDEN
+                );
             }
             // cache
             if ($request->getAttribute('has_body_cache', false)) {
-                return $response->withJson(json_decode((string)$response->getBody()));
+                return $response->withHeader('Content-Type', 'application/hal+json;charset=utf-8');
             }
 
-            $resource = $container->get("resource:{$args['type']}");
             $request = $request->withAttribute('domain', $args['domain']);
 
-            return $handler($request, $resource($request, $response));
+            return $container->get("resource:{$args['type']}")($request, $response);
         }
     )->add(
         function (Request $request, Response $response, $next) use ($container) {

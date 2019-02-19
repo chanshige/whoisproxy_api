@@ -4,7 +4,7 @@ namespace Chanshige\WhoisProxy\Resource;
 use Chanshige\Exception\InvalidQueryException;
 use Chanshige\WhoisInterface;
 use Slim\Http\Request;
-use Slim\Http\Response;
+use Chanshige\WhoisProxy\Http\Response;
 use Slim\Http\StatusCode;
 
 /**
@@ -37,16 +37,16 @@ final class Whois
         try {
             $this->whois->query($request->getAttribute('domain'), '');
 
-            return $response->withJson(
+            return $response->withHalJson(
                 $this->whois->results(),
-                StatusCode::HTTP_OK,
-                JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
+                ['self' => ["href" => $request->getUri()->getPath()]],
+                StatusCode::HTTP_OK
             );
         } catch (InvalidQueryException $e) {
-            return $response->withJson(
+            return $response->withHalJson(
                 $e->getMessage(),
-                StatusCode::HTTP_FORBIDDEN,
-                JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
+                ['self' => ["href" => $request->getUri()->getPath()]],
+                StatusCode::HTTP_FORBIDDEN
             );
         }
     }

@@ -12,6 +12,15 @@ use DavidePastore\Slim\Validation\Validation as Validation;
 
 $container = $app->getContainer();
 
+$container['response'] = function () use ($container) {
+    $response = new \Chanshige\WhoisProxy\Http\Response(
+        200,
+        new \Slim\Http\Headers(['Content-Type' => 'text/html; charset=UTF-8'])
+    );
+
+    return $response->withProtocolVersion($container->get('settings')['httpVersion']);
+};
+
 $container['notAllowedHandler'] = function () {
     return new \Chanshige\WhoisProxy\Handler\NotAllowedHandler();
 };
@@ -63,10 +72,6 @@ $container['middleware:cache'] = function () use ($container) {
 
 $container['middleware:cors'] = function () use ($container) {
     return new \Chanshige\WhoisProxy\Middleware\SimpleCors(env('ALLOW_ORIGIN'));
-};
-
-$container['handler:json'] = function () {
-    return new \Chanshige\WhoisProxy\Handler\JsonHandler();
 };
 
 $container['validation:route'] = function () use ($container) {

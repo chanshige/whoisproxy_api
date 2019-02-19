@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Chanshige\WhoisProxy\Resource;
 
 use Slim\Http\Request;
-use Slim\Http\Response;
+use Chanshige\WhoisProxy\Http\Response;
 use Slim\Http\StatusCode;
 use Symfony\Component\Process\Process;
 
@@ -26,17 +26,17 @@ final class Dig
         $process->run();
 
         if (!$process->isSuccessful()) {
-            return $response->withJson(
+            return $response->withHalJson(
                 'request failed.',
-                StatusCode::HTTP_FORBIDDEN,
-                JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
+                ['self' => ["href" => $request->getUri()->getPath()]],
+                StatusCode::HTTP_FORBIDDEN
             );
         }
 
-        return $response->withJson(
+        return $response->withHalJson(
             $this->convert($process->getOutput()),
-            StatusCode::HTTP_OK,
-            JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
+            ['self' => ["href" => $request->getUri()->getPath()]],
+            StatusCode::HTTP_OK
         );
     }
 

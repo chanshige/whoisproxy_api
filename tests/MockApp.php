@@ -4,7 +4,7 @@ namespace Chanshige\WhoisProxy;
 use Slim\App;
 use Slim\Http\Environment;
 use Slim\Http\Request;
-use Slim\Http\Response;
+use Chanshige\WhoisProxy\Http\Response;
 
 /**
  * Trait MockApp

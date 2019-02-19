@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Chanshige\WhoisProxy\Handler;
 
 use Slim\Http\Request;
-use Slim\Http\Response;
+use Chanshige\WhoisProxy\Http\Response;
 use Slim\Http\StatusCode;
 
 /**
@@ -31,15 +31,16 @@ final class ApiErrorHandler
      */
     public function __invoke(Request $request, Response $response)
     {
-        $data = [
-            "method" => $request->getMethod(),
-            "code" => $this->statusCode,
-            "state" => "fail",
-            "message" => $this->message,
+        $links = [
+            'self' => [
+                "href" => $request->getUri()->getPath()
+            ],
+            'reference' => [
+                "href" => ''
+            ]
         ];
 
-        return $response->withStatus($this->statusCode)
-            ->withHeader("Content-type", "application/problem+json;charset=utf-8")
-            ->write(json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+        return $response->withHalJson($this->message, $links, $this->statusCode)
+            ->withHeader("Content-type", "application/problem+json;charset=utf-8");
     }
 }
