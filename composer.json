@@ -1,6 +1,6 @@
 {
   "name": "chanshige/whoisproxy",
-  "description": "chanshige's whois search.",
+  "description": "chanshige's whois search api.",
   "type": "project",
   "license": "MIT",
   "homepage": "https://whoisproxy.info",
@@ -13,16 +13,16 @@
   ],
   "require": {
     "php": ">=7.3.0",
-    "ext-json": "*",
     "slim/slim": "^3.0",
     "chanshige/slim-bodycache": "*",
     "davidepastore/slim-validation": "*",
     "monolog/monolog": "^1.23",
-    "chanshige/whois": "^2.0",
+    "chanshige/whois": "^3.0",
     "symfony/cache": "^4.0",
     "symfony/process": "^4.0",
     "swiftmailer/swiftmailer": "^6.1",
-    "vlucas/phpdotenv": "^2.0"
+    "vlucas/phpdotenv": "^2.0",
+    "ext-json": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "~7.1",
@@ -38,9 +38,6 @@
     }
   },
   "autoload-dev": {
-    "files": [
-      "extend.function.php"
-    ],
     "psr-4": {
       "Chanshige\\WhoisProxy\\": "tests/"
     }
