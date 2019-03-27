@@ -16,32 +16,73 @@ use Symfony\Component\Process\Process;
 final class Dig
 {
     /**
-     * {@inheritdoc}
+     * Query Types.
+     *
+     * @var array
+     */
+    private static $qTypes = [
+        'a',
+        'any',
+        'aaaa',
+        'mx',
+        'ns',
+        'soa',
+        'txt',
+        'srv',
+        'cname'
+    ];
+
+    /**
+     * @param Request  $request
+     * @param Response $response
+     * @return Response
      */
     public function __invoke(Request $request, Response $response): Response
     {
-        $process = new Process($this->cmd(
-            $request->getAttribute('domain'),
-            $this->filterQueryType(($request->getAttribute('option') ?? 'any'))
-        ));
-        $process->run();
+        try {
+            $result = $this->process(
+                $request->getAttribute('domain'),
+                strtolower(($request->getAttribute('option') ?? 'ANY'))
+            );
 
-        if (!$process->isSuccessful()) {
             return $response->withHalJson(
-                'request failed.',
+                $result,
+                ['self' => ["href" => $request->getUri()->getPath()]],
+                StatusCode::HTTP_OK
+            );
+        } catch (\Exception $e) {
+            return $response->withHalJson(
+                $e->getMessage(),
                 ['self' => ["href" => $request->getUri()->getPath()]],
                 StatusCode::HTTP_FORBIDDEN
             );
         }
+    }
 
-        $result = iterator_to_array($this->convert($process->getOutput()));
-        array_shift($result);
+    /**
+     * Process.
+     *
+     * @param string      $domain
+     * @param string|null $option
+     * @return array
+     * @throws \RuntimeException
+     */
+    private function process(string $domain, ?string $option): array
+    {
+        if (!in_array($option, self::$qTypes, true)) {
+            throw new \RuntimeException('query-type:' . $option . ' is not supported.');
+        }
 
-        return $response->withHalJson(
-            $result,
-            ['self' => ["href" => $request->getUri()->getPath()]],
-            StatusCode::HTTP_OK
-        );
+        $process = new Process($this->cmd($domain, $option));
+        $process->run();
+        if (!$process->isSuccessful()) {
+            throw new \RuntimeException(Process::$exitCodes[$process->getStatus()]);
+        }
+
+        $output = iterator_to_array($this->convert($process->getOutput()));
+        array_shift($output);
+
+        return $output;
     }
 
     /**
@@ -77,36 +118,5 @@ final class Dig
             }
             yield trim(str_replace(["\t", '"'], ' ', $value));
         }
-    }
-
-    /**
-     * Filter query type.
-     *
-     * @param string $qType
-     * @return string
-     */
-    private function filterQueryType(string $qType): string
-    {
-        $qType = strtolower($qType);
-
-        $types = [
-            'a',
-            'any',
-            'aaaa',
-            'mx',
-            'ns',
-            'soa',
-            'hinfo',
-            'axfr',
-            'txt',
-            'srv',
-            'cname'
-        ];
-
-        if (!in_array($qType, $types, true)) {
-            return 'any';
-        }
-
-        return $qType;
     }
 }
