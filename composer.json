@@ -20,7 +20,6 @@
     "chanshige/whois": "^3.0",
     "symfony/cache": "^4.0",
     "symfony/process": "^4.0",
-    "swiftmailer/swiftmailer": "^6.1",
     "vlucas/phpdotenv": "^2.0",
     "ext-json": "*"
   },

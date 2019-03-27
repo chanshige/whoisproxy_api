@@ -16,8 +16,9 @@ final class ApiRoute implements ValidatorInterface
     public function rules(): array
     {
         return [
-            'type' => v::notEmpty()->alpha(),
+            'name' => v::notEmpty()->alpha(),
             'domain' => v::notEmpty()->domain(false),
+            'option' => v::optional(v::alpha()),
         ];
     }
 }

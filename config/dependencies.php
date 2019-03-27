@@ -41,7 +41,7 @@ $container['logger'] = function () {
     $rotating = new \Monolog\Handler\RotatingFileHandler(env('APP_LOG_FILENAME'));
     $rotating->setFormatter(
         new \Monolog\Formatter\LineFormatter(
-            "[%datetime%] [%level_name%]: %message% %context%\n",
+            "[%datetime%] [%level_name%]: %message% %context%" . PHP_EOL,
             null,
             true,
             true
@@ -63,7 +63,7 @@ $container['fileSystemCache'] = function () {
 };
 
 $container['whois'] = function () {
-    return new Chanshige\Whois();
+    return new Chanshige\Whois(new \Chanshige\Handler\Socket);
 };
 
 $container['middleware:cache'] = function () use ($container) {

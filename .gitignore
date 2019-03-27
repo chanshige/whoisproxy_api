@@ -10,5 +10,3 @@
 /var/cache/*
 
 !.gitkeep
-
-/docker

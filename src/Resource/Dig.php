@@ -16,13 +16,14 @@ use Symfony\Component\Process\Process;
 final class Dig
 {
     /**
-     * @param Request  $request
-     * @param Response $response
-     * @return Response
+     * {@inheritdoc}
      */
     public function __invoke(Request $request, Response $response): Response
     {
-        $process = new Process($this->cmd($request->getAttribute('domain', '')));
+        $process = new Process($this->cmd(
+            $request->getAttribute('domain'),
+            $this->filterQueryType(($request->getAttribute('option') ?? 'any'))
+        ));
         $process->run();
 
         if (!$process->isSuccessful()) {
@@ -33,8 +34,11 @@ final class Dig
             );
         }
 
+        $result = iterator_to_array($this->convert($process->getOutput()));
+        array_shift($result);
+
         return $response->withHalJson(
-            $this->convert($process->getOutput()),
+            $result,
             ['self' => ["href" => $request->getUri()->getPath()]],
             StatusCode::HTTP_OK
         );
@@ -42,15 +46,16 @@ final class Dig
 
     /**
      * @param string $domain
+     * @param string $qType
      * @return array
      */
-    private function cmd(string $domain): array
+    private function cmd(string $domain, string $qType): array
     {
         return [
             '/usr/bin/dig',
             '@8.8.8.8',
             $domain,
-            'any',
+            $qType,
             '+noall',
             '+ans',
             '+authority',
@@ -59,21 +64,49 @@ final class Dig
     }
 
     /**
+     * Convert data.
+     *
      * @param string $data
-     * @return array
+     * @return \Traversable
      */
-    private function convert(string $data): array
+    private function convert(string $data)
     {
-        $result = [];
-        foreach ((array)explode("\n", $data) as $value) {
-            if (strlen($value) === 0) {
+        foreach ((array)explode("\n", $data) as $key => $value) {
+            if ($key === 0) {
                 continue;
             }
-            $result[] = trim(str_replace(["\t", '"'], ' ', $value));
+            yield trim(str_replace(["\t", '"'], ' ', $value));
         }
-        // <<>> DiG...は不要
-        array_shift($result);
+    }
 
-        return $result;
+    /**
+     * Filter query type.
+     *
+     * @param string $qType
+     * @return string
+     */
+    private function filterQueryType(string $qType): string
+    {
+        $qType = strtolower($qType);
+
+        $types = [
+            'a',
+            'any',
+            'aaaa',
+            'mx',
+            'ns',
+            'soa',
+            'hinfo',
+            'axfr',
+            'txt',
+            'srv',
+            'cname'
+        ];
+
+        if (!in_array($qType, $types, true)) {
+            return 'any';
+        }
+
+        return $qType;
     }
 }

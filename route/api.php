@@ -31,9 +31,11 @@ $app->get("/", function (Request $request, Response $response) use ($container) 
  * APIs
  */
 $app->group("/v1", function () use ($app, $container) {
+    // Api resources.
+    $resource = $container->get('resources');
     $app->get(
-        "/{type}/{domain}",
-        function (Request $request, Response $response, array $args) use ($container) {
+        "/{name}/{domain}[/{option}]",
+        function (Request $request, Response $response, array $args) use ($resource) {
             $this->logger->info('route', $request->getAttributes());
             // validation
             if ($request->getAttribute('has_errors', false)) {
@@ -47,18 +49,16 @@ $app->group("/v1", function () use ($app, $container) {
             if ($request->getAttribute('has_body_cache', false)) {
                 return $response->withHeader('Content-Type', 'application/hal+json;charset=utf-8');
             }
-
             $request = $request->withAttribute('domain', $args['domain']);
+            $request = $request->withAttribute('option', $args['option']);
 
-            return $container->get("resource:{$args['type']}")($request, $response);
+            return $resource->newInstance($args['name'])($request, $response);
         }
-    )->add(
-        function (Request $request, Response $response, $next) use ($container) {
-            if ($request->getAttribute('has_errors')) {
-                return $next($request, $response);
-            }
+    )->add(function (Request $request, Response $response, $next) use ($container) {
+        if ($request->getAttribute('has_errors')) {
+            return $next($request, $response);
+        }
 
-            return $container->get('middleware:cache')($request, $response, $next);
-        }
-    )->add($container->get('validation:route'));
+        return $container->get('middleware:cache')($request, $response, $next);
+    })->add($container->get('validation:route'));
 });

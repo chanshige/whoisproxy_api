@@ -35,6 +35,11 @@ final class Whois
     public function __invoke(Request $request, Response $response): Response
     {
         try {
+            // TODO:とりあえず
+            if (!is_null($request->getAttribute('option'))) {
+                throw new InvalidQueryException('Whois resource is not option param.');
+            }
+
             $this->whois->query($request->getAttribute('domain'), '');
 
             return $response->withHalJson(

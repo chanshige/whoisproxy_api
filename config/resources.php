@@ -17,3 +17,10 @@ $container['resource:whois'] = function () use ($container) {
 $container['resource:dig'] = function () {
     return new \Chanshige\WhoisProxy\Resource\Dig();
 };
+
+$container['resources'] = function () use ($container) {
+    return new \Chanshige\WhoisProxy\Factory([
+        'whois' => $container->get('resource:whois'),
+        'dig' => $container->get('resource:dig')
+    ]);
+};
