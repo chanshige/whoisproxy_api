@@ -51,11 +51,6 @@ class DependenciesTest extends CommonTestCase
         );
 
         $this->assertInstanceOf(
-            '\Symfony\Component\Cache\Simple\FilesystemCache',
-            $container->get('fileSystemCache')
-        );
-
-        $this->assertInstanceOf(
             '\Chanshige\Whois',
             $container->get('whois')
         );

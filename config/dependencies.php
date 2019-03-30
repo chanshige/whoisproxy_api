@@ -8,39 +8,50 @@
  * file that was distributed with this source code.
  */
 
-use DavidePastore\Slim\Validation\Validation as Validation;
+use Chanshige\Handler\Socket;
+use Chanshige\Slim\BodyCache\Cache;
+use Chanshige\Whois;
+use Chanshige\WhoisProxy\Handler\{NotAllowedHandler, BadRequestHandler, ApiErrorHandler};
+use Chanshige\WhoisProxy\Http\Response;
+use Chanshige\WhoisProxy\Middleware\SimpleCors;
+use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\RotatingFileHandler;
+use Monolog\Logger;
+use Symfony\Component\Cache\Simple\FilesystemCache;
+use Slim\Http\Headers;
+use Slim\Http\StatusCode;
 
 $container = $app->getContainer();
 
 $container['response'] = function () use ($container) {
-    $response = new \Chanshige\WhoisProxy\Http\Response(
-        200,
-        new \Slim\Http\Headers(['Content-Type' => 'text/html; charset=UTF-8'])
+    $response = new Response(
+        StatusCode::HTTP_OK,
+        new Headers(['Content-Type' => 'application/hal+json;charset=utf-8'])
     );
 
     return $response->withProtocolVersion($container->get('settings')['httpVersion']);
 };
 
 $container['notAllowedHandler'] = function () {
-    return new \Chanshige\WhoisProxy\Handler\NotAllowedHandler();
+    return new NotAllowedHandler();
 };
 
 $container['errorHandler'] = function () {
-    return new \Chanshige\WhoisProxy\Handler\BadRequestHandler();
+    return new BadRequestHandler();
 };
 
 $container['phpErrorHandler'] = function () {
-    return new \Chanshige\WhoisProxy\Handler\ApiErrorHandler();
+    return new ApiErrorHandler();
 };
 
 $container['notFoundHandler'] = function () {
-    return new \Chanshige\WhoisProxy\Handler\ApiErrorHandler();
+    return new ApiErrorHandler();
 };
 
 $container['logger'] = function () {
-    $rotating = new \Monolog\Handler\RotatingFileHandler(env('APP_LOG_FILENAME'));
+    $rotating = new RotatingFileHandler(env('APP_LOG_FILENAME'));
     $rotating->setFormatter(
-        new \Monolog\Formatter\LineFormatter(
+        new LineFormatter(
             "[%datetime%] [%level_name%]: %message% %context%" . PHP_EOL,
             null,
             true,
@@ -48,32 +59,26 @@ $container['logger'] = function () {
         )
     );
 
-    $logger = new \Monolog\Logger(env('APP_NAME'));
+    $logger = new Logger(env('APP_NAME'));
     $logger->pushHandler($rotating);
 
     return $logger;
 };
 
-$container['fileSystemCache'] = function () {
-    return new \Symfony\Component\Cache\Simple\FilesystemCache(
-        env('CACHE_DIR_NAMESPACE'),
-        env('CACHE_LIFETIME'),
-        env('CACHE_DIRECTORY')
-    );
-};
-
 $container['whois'] = function () {
-    return new Chanshige\Whois(new \Chanshige\Handler\Socket);
+    return new Whois(new Socket);
 };
 
 $container['middleware:cache'] = function () use ($container) {
-    return new Chanshige\Slim\BodyCache\Cache($container->get('fileSystemCache'));
+    return new Cache(
+        new FilesystemCache(
+            env('CACHE_DIR_NAMESPACE'),
+            env('CACHE_LIFETIME'),
+            env('CACHE_DIRECTORY')
+        )
+    );
 };
 
-$container['middleware:cors'] = function () use ($container) {
-    return new \Chanshige\WhoisProxy\Middleware\SimpleCors(env('ALLOW_ORIGIN'));
-};
-
-$container['validation:route'] = function () use ($container) {
-    return new Validation((new \Chanshige\WhoisProxy\Validation\ApiRoute())->rules());
+$container['middleware:cors'] = function () {
+    return new SimpleCors(env('ALLOW_ORIGIN'));
 };
