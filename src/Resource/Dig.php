@@ -43,47 +43,39 @@ final class Dig
      */
     public function __invoke(Request $request, Response $response, array $args): Response
     {
-        try {
-            $result = $this->process($args['domain'], strtolower(($args['option'] ?? 'ANY')));
+        $links = ['self' => ["href" => $request->getUri()->getPath()]];
 
-            return $response->withHalJson(
-                $result,
-                ['self' => ["href" => $request->getUri()->getPath()]],
-                StatusCode::HTTP_OK
-            );
+        try {
+            $qType = strtolower(($args['option'] ?? 'ANY'));
+            if (!in_array($qType, self::$qTypes, true)) {
+                throw new RuntimeException('query-type:' . $qType . ' is not supported.');
+            }
+
+            $result = $this->process($args['domain'], $qType);
+
+            return $response->withHalJson($result, $links, StatusCode::HTTP_OK);
         } catch (Exception $e) {
-            return $response->withHalJson(
-                $e->getMessage(),
-                ['self' => ["href" => $request->getUri()->getPath()]],
-                StatusCode::HTTP_FORBIDDEN
-            );
+            return $response->withHalJson($e->getMessage(), $links, StatusCode::HTTP_FORBIDDEN);
         }
     }
 
     /**
      * Process.
      *
-     * @param string      $domain
-     * @param string|null $option
+     * @param string $domain
+     * @param string $option
      * @return array
      * @throws RuntimeException
      */
-    private function process(string $domain, ?string $option): array
+    private function process(string $domain, string $option): array
     {
-        if (!in_array($option, self::$qTypes, true)) {
-            throw new RuntimeException('query-type:' . $option . ' is not supported.');
-        }
-
         $process = new Process($this->cmd($domain, $option));
         $process->run();
         if (!$process->isSuccessful()) {
             throw new RuntimeException(Process::$exitCodes[$process->getStatus()]);
         }
 
-        $output = iterator_to_array($this->convert($process->getOutput()));
-        array_shift($output);
-
-        return $output;
+        return iterator_to_array($this->convert($process->getOutput()));
     }
 
     /**
@@ -99,7 +91,9 @@ final class Dig
             $domain,
             $qType,
             '+noall',
+            '+nocmd',
             '+ans',
+            '+additional',
             '+authority',
             '+time=1'
         ];
@@ -109,14 +103,16 @@ final class Dig
      * Convert data.
      *
      * @param string $data
-     * @return \Traversable
+     * @return \Generator
      */
-    private function convert(string $data)
+    private function convert(string $data): \Generator
     {
-        foreach ((array)explode("\n", $data) as $key => $value) {
-            if ($key === 0) {
+        foreach ((array)explode("\n", trim($data)) as $key => $value) {
+            // <<>> DiG..
+            if ($key <= 2 || strlen($value) === 0) {
                 continue;
             }
+
             yield trim(str_replace(["\t", '"'], ' ', $value));
         }
     }
