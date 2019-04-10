@@ -8,19 +8,37 @@
  * file that was distributed with this source code.
  */
 
+use Chanshige\WhoisProxy\Resource\{Dig, Whois};
+use DavidePastore\Slim\Validation\Validation as Validation;
+
 $container = $app->getContainer();
 
-$container['resource:whois'] = function () use ($container) {
-    return new \Chanshige\WhoisProxy\Resource\Whois($container->get('whois'));
+/*
+ * Resource.
+ */
+$container['resource.whois'] = function () use ($container) {
+    return new Whois($container->get('whois'));
 };
 
-$container['resource:dig'] = function () {
-    return new \Chanshige\WhoisProxy\Resource\Dig();
+$container['resource.dig'] = function () {
+    return new Dig();
 };
 
-$container['resources'] = function () use ($container) {
-    return new \Chanshige\WhoisProxy\Factory([
-        'whois' => $container->get('resource:whois'),
-        'dig' => $container->get('resource:dig')
-    ]);
+/*
+ * Validation.
+ */
+$container['validation.route'] = function () {
+    return new Validation((new \Chanshige\WhoisProxy\Validation\ApiRoute)->rules());
+};
+
+/*
+ * Factories.
+ */
+$container['factory.resource'] = function () use ($container) {
+    return new \Chanshige\WhoisProxy\Factory\ResourceFactory(
+        [
+            'whois' => $container->get('resource.whois'),
+            'dig' => $container->get('resource.dig')
+        ]
+    );
 };

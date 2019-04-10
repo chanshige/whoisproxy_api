@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace Chanshige\WhoisProxy\Resource;
 
+use Exception;
+use RuntimeException;
+
 use Slim\Http\Request;
 use Chanshige\WhoisProxy\Http\Response;
 use Slim\Http\StatusCode;
@@ -35,22 +38,20 @@ final class Dig
     /**
      * @param Request  $request
      * @param Response $response
+     * @param array    $args
      * @return Response
      */
-    public function __invoke(Request $request, Response $response): Response
+    public function __invoke(Request $request, Response $response, array $args): Response
     {
         try {
-            $result = $this->process(
-                $request->getAttribute('domain'),
-                strtolower(($request->getAttribute('option') ?? 'ANY'))
-            );
+            $result = $this->process($args['domain'], strtolower(($args['option'] ?? 'ANY')));
 
             return $response->withHalJson(
                 $result,
                 ['self' => ["href" => $request->getUri()->getPath()]],
                 StatusCode::HTTP_OK
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $response->withHalJson(
                 $e->getMessage(),
                 ['self' => ["href" => $request->getUri()->getPath()]],
@@ -65,18 +66,18 @@ final class Dig
      * @param string      $domain
      * @param string|null $option
      * @return array
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     private function process(string $domain, ?string $option): array
     {
         if (!in_array($option, self::$qTypes, true)) {
-            throw new \RuntimeException('query-type:' . $option . ' is not supported.');
+            throw new RuntimeException('query-type:' . $option . ' is not supported.');
         }
 
         $process = new Process($this->cmd($domain, $option));
         $process->run();
         if (!$process->isSuccessful()) {
-            throw new \RuntimeException(Process::$exitCodes[$process->getStatus()]);
+            throw new RuntimeException(Process::$exitCodes[$process->getStatus()]);
         }
 
         $output = iterator_to_array($this->convert($process->getOutput()));

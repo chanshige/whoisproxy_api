@@ -69,7 +69,7 @@ $container['whois'] = function () {
     return new Whois(new Socket);
 };
 
-$container['middleware:cache'] = function () use ($container) {
+$container['middleware.cache'] = function () use ($container) {
     return new Cache(
         new FilesystemCache(
             env('CACHE_DIR_NAMESPACE'),
@@ -79,6 +79,6 @@ $container['middleware:cache'] = function () use ($container) {
     );
 };
 
-$container['middleware:cors'] = function () {
+$container['middleware.cors'] = function () {
     return new SimpleCors(env('ALLOW_ORIGIN'));
 };

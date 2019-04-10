@@ -8,7 +8,7 @@ use Respect\Validation\Validator as v;
  *
  * @package Chanshige\WhoisProxy\Validation
  */
-final class ApiRoute implements ValidatorInterface
+final class ApiRoute implements ValidationInterface
 {
     /**
      * @return array

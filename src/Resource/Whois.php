@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Chanshige\WhoisProxy\Resource;
 
 use Chanshige\Exception\InvalidQueryException;
@@ -30,17 +32,13 @@ final class Whois
     /**
      * @param Request  $request
      * @param Response $response
+     * @param array    $args
      * @return Response
      */
-    public function __invoke(Request $request, Response $response): Response
+    public function __invoke(Request $request, Response $response, array $args): Response
     {
         try {
-            // TODO:とりあえず
-            if (!is_null($request->getAttribute('option'))) {
-                throw new InvalidQueryException('Whois resource is not option param.');
-            }
-
-            $this->whois->query($request->getAttribute('domain'), '');
+            $this->whois->query($args['domain'], '');
 
             return $response->withHalJson(
                 $this->whois->results(),

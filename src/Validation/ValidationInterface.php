@@ -2,13 +2,15 @@
 namespace Chanshige\WhoisProxy\Validation;
 
 /**
- * Interface ValidatorInterface
+ * Interface ValidationInterface
  *
  * @package Chanshige\WhoisProxy\Validation
  */
-interface ValidatorInterface
+interface ValidationInterface
 {
     /**
+     * Set validator rules.
+     *
      * @return array
      */
     public function rules(): array;

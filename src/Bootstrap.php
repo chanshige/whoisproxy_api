@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Chanshige\WhoisProxy;
 
 use Slim\App;
@@ -22,7 +24,7 @@ final class Bootstrap
     {
         require APP_DIR . 'config/dependencies.php';
         require APP_DIR . 'config/resources.php';
-        require APP_DIR . 'route/api.php';
+        require APP_DIR . 'config/route_api.php';
 
         $this->app = $app;
     }
