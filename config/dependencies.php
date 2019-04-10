@@ -11,7 +11,7 @@
 use Chanshige\Handler\Socket;
 use Chanshige\Slim\BodyCache\Cache;
 use Chanshige\Whois;
-use Chanshige\WhoisProxy\Handler\{NotAllowedHandler, BadRequestHandler, ApiErrorHandler};
+use Chanshige\WhoisProxy\Handler\{ApiErrorHandler, BadRequestHandler, NotAllowedHandler, NotFoundHandler};
 use Chanshige\WhoisProxy\Http\Response;
 use Chanshige\WhoisProxy\Middleware\SimpleCors;
 use Monolog\Formatter\LineFormatter;
@@ -45,7 +45,7 @@ $container['phpErrorHandler'] = function () {
 };
 
 $container['notFoundHandler'] = function () {
-    return new ApiErrorHandler();
+    return new NotFoundHandler();
 };
 
 $container['logger'] = function () {

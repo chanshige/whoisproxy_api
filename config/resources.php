@@ -13,9 +13,6 @@ use DavidePastore\Slim\Validation\Validation as Validation;
 
 $container = $app->getContainer();
 
-/*
- * Resource.
- */
 $container['resource.whois'] = function () use ($container) {
     return new Whois($container->get('whois'));
 };
@@ -24,9 +21,6 @@ $container['resource.dig'] = function () {
     return new Dig();
 };
 
-/*
- * Validation.
- */
 $container['validation.route'] = function () {
     return new Validation((new \Chanshige\WhoisProxy\Validation\ApiRoute)->rules());
 };

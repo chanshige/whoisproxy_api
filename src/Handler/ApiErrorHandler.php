@@ -31,16 +31,19 @@ final class ApiErrorHandler
      */
     public function __invoke(Request $request, Response $response)
     {
-        $links = [
-            'self' => [
-                "href" => $request->getUri()->getPath()
+        $response = $response->withHalJson(
+            $request->getAttribute('errors', $this->message),
+            [
+                'self' => [
+                    "href" => $request->getUri()->getPath()
+                ],
+                'reference' => [
+                    "href" => ''
+                ]
             ],
-            'reference' => [
-                "href" => ''
-            ]
-        ];
+            $this->statusCode
+        );
 
-        return $response->withHalJson($this->message, $links, $this->statusCode)
-            ->withHeader("Content-type", "application/problem+json;charset=utf-8");
+        return $response->withHeader("Content-type", "application/problem+json;charset=utf-8");
     }
 }
