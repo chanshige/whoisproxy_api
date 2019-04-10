@@ -82,3 +82,7 @@ $container['middleware.cache'] = function () use ($container) {
 $container['middleware.cors'] = function () {
     return new SimpleCors(env('ALLOW_ORIGIN'));
 };
+
+$container['middleware.validate'] = function () {
+    return new \Chanshige\WhoisProxy\Middleware\ValidateMiddleware();
+};

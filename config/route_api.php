@@ -15,14 +15,16 @@ use Slim\Http\Request;
 use Chanshige\WhoisProxy\Http\Response;
 
 $container = $app->getContainer();
-
 $app->add($container->get('middleware.cors'));
 
-$app->get("/", function (Request $request, Response $response) {
-    $errorHandler = $this->get('notFoundHandler');
-    return $errorHandler($request, $response);
-});
+/**
+ * Route access.
+ */
+$app->get("/", $container->get('notFoundHandler'));
 
+/**
+ * API
+ */
 $app->group("/v1", function (App $app) use ($container) {
     $app->get(
         "/{name}/{domain}[/{option}]",
@@ -39,14 +41,6 @@ $app->group("/v1", function (App $app) use ($container) {
             return $resource($request, $response, $args);
         }
     )->add($container->get('middleware.cache')
-    )->add(
-        function (Request $request, Response $response, $next) {
-            if ($request->getAttribute('has_errors', false)) {
-                $errorHandler = $this->get('phpErrorHandler');
-                return $errorHandler($request, $response);
-            }
-
-            return $next($request, $response);
-        }
-    )->add($container->get('validation.route'));
+    )->add($container->get('middleware.validate')
+    )->add($container->get('validation.api.route'));
 });

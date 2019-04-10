@@ -21,10 +21,6 @@ $container['resource.dig'] = function () {
     return new Dig();
 };
 
-$container['validation.route'] = function () {
-    return new Validation((new \Chanshige\WhoisProxy\Validation\ApiRoute)->rules());
-};
-
 /*
  * Factories.
  */
@@ -35,4 +31,8 @@ $container['factory.resource'] = function () use ($container) {
             'dig' => $container->get('resource.dig')
         ]
     );
+};
+
+$container['validation.api.route'] = function () {
+    return new Validation((new \Chanshige\WhoisProxy\Validation\ApiRoute)->rules());
 };
