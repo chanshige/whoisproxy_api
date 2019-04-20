@@ -40,7 +40,7 @@ $app->group("/v1", function (App $app) use ($container) {
 
             return $resource($request, $response, $args);
         }
-    )->add($container->get('middleware.cache')
-    )->add($container->get('middleware.validate')
-    )->add($container->get('validation.api.route'));
+    )->add($container->get('middleware.cache'))
+        ->add($container->get('middleware.validate'))
+        ->add($container->get('validation.api.route'));
 });
