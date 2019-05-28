@@ -22,9 +22,13 @@ final class Bootstrap
      */
     public function __construct(App $app)
     {
-        require APP_DIR . 'config/dependencies.php';
-        require APP_DIR . 'config/resources.php';
-        require APP_DIR . 'config/route_api.php';
+        $container = $app->getContainer();
+
+        $dependencies = require APP_DIR . 'config/dependencies.php';
+        $dependencies($container);
+
+        $resources = require APP_DIR . 'config/resources.php';
+        $resources($container);
 
         $this->app = $app;
     }

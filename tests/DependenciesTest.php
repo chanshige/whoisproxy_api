@@ -41,7 +41,7 @@ class DependenciesTest extends CommonTestCase
         );
 
         $this->assertInstanceOf(
-            '\Chanshige\WhoisProxy\Handler\ApiErrorHandler',
+            '\Chanshige\WhoisProxy\Handler\NotFoundHandler',
             $container->get('notFoundHandler')
         );
 

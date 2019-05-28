@@ -12,14 +12,19 @@ require __DIR__ . '/vendor/autoload.php';
 
 const APP_DIR = __DIR__ . '/';
 
-$dotenv = new \Dotenv\Dotenv(APP_DIR);
-$dotenv->load();
+/* Load dotenv */
+(new \Dotenv\Dotenv(APP_DIR))->load();
 
+/* to Slim */
 $settings['settings'] = [
     'displayErrorDetails' => env('DISPLAY_ERROR_DETAILS', false),
     'addContentLengthHeader' => env('ADD_CONTENT_LENGTH_HEADER', false),
     'determineRouteBeforeAppMiddleware' => env('DETERMINE_ROUTE_BEFORE_APP_MIDDLEWARE', true),
 ];
 
-$app = (new \Chanshige\WhoisProxy\Bootstrap(new \Slim\App()))->get();
+$app = (new \Chanshige\WhoisProxy\Bootstrap(new \Slim\App))->get();
+
+$apiRoutes = require APP_DIR . 'config/routes/api.php';
+$apiRoutes($app);
+
 $app->run();

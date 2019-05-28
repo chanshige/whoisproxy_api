@@ -8,6 +8,7 @@
  * file that was distributed with this source code.
  */
 
+use Psr\Container\ContainerInterface;
 use Chanshige\Handler\Socket;
 use Chanshige\Slim\BodyCache\Cache;
 use Chanshige\Whois;
@@ -21,68 +22,68 @@ use Symfony\Component\Cache\Simple\FilesystemCache;
 use Slim\Http\Headers;
 use Slim\Http\StatusCode;
 
-$container = $app->getContainer();
+return function (ContainerInterface $container) {
+    $container['response'] = function () use ($container) {
+        $response = new Response(
+            StatusCode::HTTP_OK,
+            new Headers(['Content-Type' => 'application/hal+json;charset=utf-8'])
+        );
 
-$container['response'] = function () use ($container) {
-    $response = new Response(
-        StatusCode::HTTP_OK,
-        new Headers(['Content-Type' => 'application/hal+json;charset=utf-8'])
-    );
+        return $response->withProtocolVersion($container->get('settings')['httpVersion']);
+    };
 
-    return $response->withProtocolVersion($container->get('settings')['httpVersion']);
-};
+    $container['notAllowedHandler'] = function () {
+        return new NotAllowedHandler();
+    };
 
-$container['notAllowedHandler'] = function () {
-    return new NotAllowedHandler();
-};
+    $container['errorHandler'] = function () {
+        return new BadRequestHandler();
+    };
 
-$container['errorHandler'] = function () {
-    return new BadRequestHandler();
-};
+    $container['phpErrorHandler'] = function () {
+        return new ApiErrorHandler();
+    };
 
-$container['phpErrorHandler'] = function () {
-    return new ApiErrorHandler();
-};
+    $container['notFoundHandler'] = function () {
+        return new NotFoundHandler();
+    };
 
-$container['notFoundHandler'] = function () {
-    return new NotFoundHandler();
-};
+    $container['logger'] = function () {
+        $rotating = new RotatingFileHandler(env('APP_LOG_FILENAME'));
+        $rotating->setFormatter(
+            new LineFormatter(
+                env('APP_LOG_FORMAT') . PHP_EOL,
+                null,
+                true,
+                true
+            )
+        );
 
-$container['logger'] = function () {
-    $rotating = new RotatingFileHandler(env('APP_LOG_FILENAME'));
-    $rotating->setFormatter(
-        new LineFormatter(
-            "[%datetime%] [%level_name%]: %message% %context%" . PHP_EOL,
-            null,
-            true,
-            true
-        )
-    );
+        $logger = new Logger(env('APP_NAME'));
+        $logger->pushHandler($rotating);
 
-    $logger = new Logger(env('APP_NAME'));
-    $logger->pushHandler($rotating);
+        return $logger;
+    };
 
-    return $logger;
-};
+    $container['whois'] = function () {
+        return new Whois(new Socket);
+    };
 
-$container['whois'] = function () {
-    return new Whois(new Socket);
-};
+    $container['middleware.cache'] = function () use ($container) {
+        return new Cache(
+            new FilesystemCache(
+                env('CACHE_DIR_NAMESPACE'),
+                env('CACHE_LIFETIME'),
+                env('CACHE_DIRECTORY')
+            )
+        );
+    };
 
-$container['middleware.cache'] = function () use ($container) {
-    return new Cache(
-        new FilesystemCache(
-            env('CACHE_DIR_NAMESPACE'),
-            env('CACHE_LIFETIME'),
-            env('CACHE_DIRECTORY')
-        )
-    );
-};
+    $container['middleware.cors'] = function () {
+        return new SimpleCors(env('ALLOW_ORIGIN'));
+    };
 
-$container['middleware.cors'] = function () {
-    return new SimpleCors(env('ALLOW_ORIGIN'));
-};
-
-$container['middleware.validate'] = function () {
-    return new \Chanshige\WhoisProxy\Middleware\ValidateMiddleware();
+    $container['middleware.validate'] = function () {
+        return new \Chanshige\WhoisProxy\Middleware\ValidateMiddleware();
+    };
 };

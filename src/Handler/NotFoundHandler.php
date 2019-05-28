@@ -35,8 +35,16 @@ final class NotFoundHandler
             'self' => [
                 "href" => $request->getUri()->getPath()
             ],
+            'resource' => [
+                'whois' => [
+                    "href" => '/whois/{domain}'
+                ],
+                'dig' => [
+                    "href" => '/dig/{domain}[/{q-type}]'
+                ],
+            ],
             'reference' => [
-                "href" => ''
+                "href" => 'https://whoisproxy.github.io',
             ]
         ];
 

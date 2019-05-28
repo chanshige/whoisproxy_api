@@ -10,25 +10,25 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Slim\App;
-use Slim\Http\Request;
-use Chanshige\WhoisProxy\Http\Response;
 
-$container = $app->getContainer();
-$app->add($container->get('middleware.cors'));
+return function (App $app) {
+    $c = $app->getContainer();
+    $app->add($c->get('middleware.cors'));
 
-/**
- * Route access.
- */
-$app->get("/", $container->get('notFoundHandler'));
+    /**
+     * Route access.
+     */
+    $app->get("/", $c->get('notFoundHandler'));
 
-/**
- * API
- */
-$app->group("/v1", function (App $app) use ($container) {
+    /**
+     * API resource.
+     */
     $app->get(
         "/{name}/{domain}[/{option}]",
-        function (Request $request, Response $response, array $args) {
+        function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
             $this->logger->info('[transaction]', $request->getAttributes());
             // body cache.
             if ($request->getAttribute('has_body_cache', false)) {
@@ -40,7 +40,7 @@ $app->group("/v1", function (App $app) use ($container) {
 
             return $resource($request, $response, $args);
         }
-    )->add($container->get('middleware.cache'))
-        ->add($container->get('middleware.validate'))
-        ->add($container->get('validation.api.route'));
-});
+    )->add($c->get('middleware.cache'))
+        ->add($c->get('middleware.validate'))
+        ->add($c->get('validation.api.route'));
+};
