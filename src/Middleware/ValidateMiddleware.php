@@ -15,7 +15,17 @@ final class ValidateMiddleware implements MiddlewareInterface
     {
         // error response.
         if ($request->getAttribute('has_errors', false)) {
-            throw new \LogicException('Invalid input error.');
+            $links = [
+                'self' => [
+                    "href" => $request->getUri()->getPath()
+                ],
+                'reference' => [
+                    "href" => '',
+                ]
+            ];
+
+            return $response->withHalJson($request->getAttribute('errors', []), $links, 400)
+                ->withHeader("Content-type", "application/problem+json;charset=utf-8");
         }
 
         return $next($request, $response);

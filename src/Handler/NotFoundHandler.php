@@ -35,20 +35,31 @@ final class NotFoundHandler
             'self' => [
                 "href" => $request->getUri()->getPath()
             ],
-            'resource' => [
-                'whois' => [
-                    "href" => '/whois/{domain}'
-                ],
-                'dig' => [
-                    "href" => '/dig/{domain}[/{q-type}]'
-                ],
+            'doc:whois' => [
+                "href" => '/whois/{domain}',
+                "title" => 'Lookup find out the registered domain holder.'
+            ],
+            'doc:dig' => [
+                "href" => '/dig/{domain}[/{q-type}]',
+                "title" => 'domain information groper.'
             ],
             'reference' => [
-                "href" => 'https://whoisproxy.github.io',
+                "href" => '',
             ]
         ];
 
         return $response->withHalJson($this->message, $links, $this->statusCode)
             ->withHeader("Content-type", "application/problem+json;charset=utf-8");
+    }
+
+    /**
+     * @param string $message
+     * @return NotFoundHandler
+     */
+    public function setMessage(string $message): NotFoundHandler
+    {
+        $this->message = $message;
+
+        return $this;
     }
 }

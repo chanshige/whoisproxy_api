@@ -17,12 +17,12 @@ final class ApiErrorHandler
     /**
      * @var int status code
      */
-    private $statusCode = StatusCode::HTTP_FORBIDDEN;
+    private $statusCode = StatusCode::HTTP_INTERNAL_SERVER_ERROR;
 
     /**
      * @var string api response message.
      */
-    private $message = 'Forbidden';
+    private $message = 'Internal Server Error. Please try again later.';
 
     /**
      * @param Request  $request

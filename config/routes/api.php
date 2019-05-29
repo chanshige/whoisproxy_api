@@ -21,7 +21,10 @@ return function (App $app) {
     /**
      * Route access.
      */
-    $app->get("/", $c->get('notFoundHandler'));
+    $app->get(
+        "/",
+        $c->get('notFoundHandler')->setMessage('Welcome to a whoisproxy api.')
+    );
 
     /**
      * API resource.
