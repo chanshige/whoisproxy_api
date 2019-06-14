@@ -4,11 +4,11 @@ namespace Chanshige\WhoisProxy\Factory;
 use Slim\Http\StatusCode;
 
 /**
- * Class ResourceFactory
+ * Class ObjectFactory
  *
  * @package Chanshige\WhoisProxy\Factory
  */
-final class ResourceFactory implements FactoryInterface, \IteratorAggregate
+final class ObjectFactory implements FactoryInterface, \IteratorAggregate
 {
     /** @var array */
     private $map = [];
@@ -20,7 +20,7 @@ final class ResourceFactory implements FactoryInterface, \IteratorAggregate
      */
     public function __construct(array $map)
     {
-        $this->map = $map;
+        $this->map = new \ArrayIterator($map);
     }
 
     /**
@@ -28,7 +28,7 @@ final class ResourceFactory implements FactoryInterface, \IteratorAggregate
      */
     public function newInstance(string $name): object
     {
-        if (!$this->exists($name)) {
+        if (!$this->map->offsetExists($name)) {
             throw new \RuntimeException("Oops!! {$name} is undefined.", StatusCode::HTTP_NOT_FOUND);
         }
 
@@ -40,15 +40,6 @@ final class ResourceFactory implements FactoryInterface, \IteratorAggregate
      */
     public function getIterator()
     {
-        return new \ArrayIterator($this->map);
-    }
-
-    /**
-     * @param string $name
-     * @return bool
-     */
-    private function exists(string $name): bool
-    {
-        return isset($this->map[$name]);
+        return $this->map;
     }
 }

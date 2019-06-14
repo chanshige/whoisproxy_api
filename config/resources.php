@@ -11,6 +11,9 @@
 use Psr\Container\ContainerInterface;
 
 return function (ContainerInterface $container) {
+    /*
+     * Resource.
+     */
     $container['resource.whois'] = function () use ($container) {
         return new \Chanshige\WhoisProxy\Resource\Whois($container->get('whois'));
     };
@@ -19,11 +22,8 @@ return function (ContainerInterface $container) {
         return new \Chanshige\WhoisProxy\Resource\Dig();
     };
 
-    /*
-     * Factories.
-     */
     $container['factory.resource'] = function () use ($container) {
-        return new \Chanshige\WhoisProxy\Factory\ResourceFactory(
+        return new \Chanshige\WhoisProxy\Factory\ObjectFactory(
             [
                 'whois' => $container->get('resource.whois'),
                 'dig' => $container->get('resource.dig')
@@ -31,7 +31,27 @@ return function (ContainerInterface $container) {
         );
     };
 
-    $container['validation.api.route'] = function () {
-        return new \DavidePastore\Slim\Validation\Validation((new \Chanshige\WhoisProxy\Validation\ApiRoute)->rules());
+    /*
+     * Validation
+     */
+    $container['validation.whois'] = function () {
+        return new \DavidePastore\Slim\Validation\Validation(
+            (new \Chanshige\WhoisProxy\Validation\Whois)->rules()
+        );
+    };
+
+    $container['validation.dig'] = function () {
+        return new \DavidePastore\Slim\Validation\Validation(
+            (new \Chanshige\WhoisProxy\Validation\Dig)->rules()
+        );
+    };
+
+    $container['factory.validation'] = function () use ($container) {
+        return new \Chanshige\WhoisProxy\Factory\ObjectFactory(
+            [
+                'whois' => $container->get('validation.whois'),
+                'dig' => $container->get('validation.dig')
+            ]
+        );
     };
 };

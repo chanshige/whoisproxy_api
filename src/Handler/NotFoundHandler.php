@@ -40,7 +40,7 @@ final class NotFoundHandler
                 "title" => 'Lookup find out the registered domain holder.'
             ],
             'doc:dig' => [
-                "href" => '/dig/{domain}[/{q-type}]',
+                "href" => '/dig/{domain}[/{q-type}[/{global-server}]]]',
                 "title" => 'domain information groper.'
             ],
             'reference' => [

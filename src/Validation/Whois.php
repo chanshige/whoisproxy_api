@@ -1,24 +1,24 @@
 <?php
+declare(strict_types=1);
+
 namespace Chanshige\WhoisProxy\Validation;
 
 use Respect\Validation\Validator as v;
 
 /**
- * Class ApiRoute
+ * Class Whois
  *
  * @package Chanshige\WhoisProxy\Validation
  */
-final class ApiRoute implements ValidationInterface
+final class Whois implements ValidationInterface
 {
     /**
-     * @return array
+     * {@inheritDoc}
      */
     public function rules(): array
     {
         return [
-            'name' => v::notEmpty()->alpha(),
-            'domain' => v::notEmpty()->alnum('.-_'),
-            'option' => v::optional(v::alpha()),
+            'domain' => v::notEmpty()->domain(false),
         ];
     }
 }

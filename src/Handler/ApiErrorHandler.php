@@ -8,7 +8,7 @@ use Chanshige\WhoisProxy\Http\Response;
 use Slim\Http\StatusCode;
 
 /**
- * Class ApiErrorHandler
+ * Class ApiErrorHandler (RuntimeError)
  *
  * @package Chanshige\WhoisProxy\Handler
  */

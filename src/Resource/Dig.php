@@ -23,7 +23,7 @@ final class Dig
      *
      * @var array
      */
-    private static $qTypes = [
+    public static $qTypes = [
         'a',
         'any',
         'aaaa',
@@ -34,6 +34,9 @@ final class Dig
         'srv',
         'cname'
     ];
+
+    /** @var string */
+    private static $defaultServer = '8.8.8.8';
 
     /**
      * @param Request  $request
@@ -46,12 +49,10 @@ final class Dig
         $links = ['self' => ["href" => $request->getUri()->getPath()]];
 
         try {
-            $qType = strtolower(($args['option'] ?? 'ANY'));
-            if (!in_array($qType, self::$qTypes, true)) {
-                throw new RuntimeException('query-type:' . $qType . ' is not supported.');
-            }
+            $qType = isset($args['q-type']) ? $args['q-type'] : '';
+            $globalServer = isset($args['global-server']) ? $args['global-server'] : '';
 
-            $result = $this->process($args['domain'], $qType);
+            $result = $this->process($this->cmd($args['domain'], $qType, $globalServer));
 
             return $response->withHalJson($result, $links, StatusCode::HTTP_OK);
         } catch (Exception $e) {
@@ -60,19 +61,18 @@ final class Dig
     }
 
     /**
-     * Process.
+     * Process. (Symfony/Process)
      *
-     * @param string $domain
-     * @param string $option
+     * @param array $command
      * @return array
      * @throws RuntimeException
      */
-    private function process(string $domain, string $option): array
+    private function process(array $command): array
     {
-        $process = new Process($this->cmd($domain, $option));
+        $process = new Process($command);
         $process->run();
         if (!$process->isSuccessful()) {
-            throw new RuntimeException(Process::$exitCodes[$process->getStatus()]);
+            throw new RuntimeException($process->getExitCodeText());
         }
 
         return iterator_to_array($this->convert($process->getOutput()));
@@ -81,15 +81,16 @@ final class Dig
     /**
      * @param string $domain
      * @param string $qType
+     * @param string $globalServer
      * @return array
      */
-    private function cmd(string $domain, string $qType): array
+    private function cmd(string $domain, string $qType, string $globalServer): array
     {
         return [
             '/usr/bin/dig',
-            '@8.8.8.8',
+            $this->filterGlobalServer($globalServer),
             $domain,
-            $qType,
+            $this->filterQueryType($qType),
             '+noall',
             '+nocmd',
             '+ans',
@@ -97,6 +98,24 @@ final class Dig
             '+authority',
             '+time=1'
         ];
+    }
+
+    /**
+     * @param string $qType
+     * @return string
+     */
+    private function filterQueryType(string $qType): string
+    {
+        return strtolower(strlen($qType) > 0 ? $qType : 'any');
+    }
+
+    /**
+     * @param string $servername
+     * @return string
+     */
+    private function filterGlobalServer(string $servername): string
+    {
+        return '@' . strtolower(strlen($servername) > 0 ? $servername : self::$defaultServer);
     }
 
     /**

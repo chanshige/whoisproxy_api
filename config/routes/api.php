@@ -30,7 +30,7 @@ return function (App $app) {
      * API resource.
      */
     $app->get(
-        "/{name}/{domain}[/{option}]",
+        "/{name:[a-z]+}/[{domain}[/{q-type}[/{global-server}]]]",
         function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
             $this->logger->info('[transaction]', $request->getAttributes());
             // body cache.
@@ -43,7 +43,19 @@ return function (App $app) {
 
             return $resource($request, $response, $args);
         }
-    )->add($c->get('middleware.cache'))
-        ->add($c->get('middleware.validate'))
-        ->add($c->get('validation.api.route'));
+    )->add(
+        $c->get('middleware.cache')
+    )->add(
+        $c->get('middleware.validate')
+    )->add(
+        function (ServerRequestInterface $request, ResponseInterface $response, $next) {
+            /** @var \Slim\Interfaces\RouteInterface $args */
+            $resource_name = $request->getAttribute('route')->getArgument('name');
+
+            $validation = $this->get('factory.validation')
+                ->newInstance(strtolower($resource_name));
+
+            return $validation($request, $response, $next);
+        }
+    );
 };

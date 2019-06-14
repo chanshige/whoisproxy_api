@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-use Psr\Container\ContainerInterface;
 use Chanshige\Handler\Socket;
 use Chanshige\Slim\BodyCache\Cache;
 use Chanshige\Whois;
@@ -18,6 +17,7 @@ use Chanshige\WhoisProxy\Middleware\SimpleCors;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\Cache\Simple\FilesystemCache;
 use Slim\Http\Headers;
 use Slim\Http\StatusCode;
