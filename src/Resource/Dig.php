@@ -16,7 +16,7 @@ use Symfony\Component\Process\Process;
  *
  * @package Chanshige\WhoisProxy\Resource
  */
-final class Dig
+final class Dig extends AbstractResource
 {
     /**
      * Query Types.
@@ -46,7 +46,7 @@ final class Dig
      */
     public function __invoke(Request $request, Response $response, array $args): Response
     {
-        $links = ['self' => ["href" => $request->getUri()->getPath()]];
+        $this->links['self']['href'] = $request->getUri()->getPath();
 
         try {
             $qType = isset($args['q-type']) ? $args['q-type'] : '';
@@ -54,9 +54,9 @@ final class Dig
 
             $result = $this->process($this->cmd($args['domain'], $qType, $globalServer));
 
-            return $response->withHalJson($result, $links, StatusCode::HTTP_OK);
+            return $response->withHalJson($result, $this->links, StatusCode::HTTP_OK);
         } catch (Exception $e) {
-            return $response->withHalJson($e->getMessage(), $links, StatusCode::HTTP_FORBIDDEN);
+            return $response->withHalJson($e->getMessage(), $this->links, StatusCode::HTTP_FORBIDDEN);
         }
     }
 

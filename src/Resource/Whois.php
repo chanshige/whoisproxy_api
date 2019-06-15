@@ -14,7 +14,7 @@ use Slim\Http\StatusCode;
  *
  * @package Chanshige\WhoisProxy\Resource
  */
-final class Whois
+final class Whois extends AbstractResource
 {
     /** @var WhoisInterface */
     private $whois;
@@ -37,20 +37,14 @@ final class Whois
      */
     public function __invoke(Request $request, Response $response, array $args): Response
     {
+        $this->links['self']['href'] = $request->getUri()->getPath();
+
         try {
             $this->whois->query($args['domain'], '');
 
-            return $response->withHalJson(
-                $this->whois->results(),
-                ['self' => ["href" => $request->getUri()->getPath()]],
-                StatusCode::HTTP_OK
-            );
+            return $response->withHalJson($this->whois->results(), $this->links, StatusCode::HTTP_OK);
         } catch (InvalidQueryException $e) {
-            return $response->withHalJson(
-                $e->getMessage(),
-                ['self' => ["href" => $request->getUri()->getPath()]],
-                StatusCode::HTTP_FORBIDDEN
-            );
+            return $response->withHalJson($e->getMessage(), $this->links, StatusCode::HTTP_FORBIDDEN);
         }
     }
 }
