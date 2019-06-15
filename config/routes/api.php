@@ -49,11 +49,11 @@ return function (App $app) {
         $c->get('middleware.validate')
     )->add(
         function (ServerRequestInterface $request, ResponseInterface $response, $next) {
-            /** @var \Slim\Interfaces\RouteInterface $args */
-            $resource_name = $request->getAttribute('route')->getArgument('name');
+            /** @var \Slim\Interfaces\RouteInterface $route */
+            $route = $request->getAttribute('route');
 
             $validation = $this->get('factory.validation')
-                ->newInstance(strtolower($resource_name));
+                ->newInstance(strtolower($route->getArgument('name')));
 
             return $validation($request, $response, $next);
         }

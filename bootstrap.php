@@ -22,7 +22,7 @@ $settings['settings'] = [
     'determineRouteBeforeAppMiddleware' => env('DETERMINE_ROUTE_BEFORE_APP_MIDDLEWARE', true),
 ];
 
-$app = (new \Chanshige\WhoisProxy\Bootstrap(new \Slim\App))->get();
+$app = (new \Chanshige\WhoisProxy\Bootstrap(new \Slim\App($settings)))->get();
 
 $apiRoutes = require APP_DIR . 'config/routes/api.php';
 $apiRoutes($app);
