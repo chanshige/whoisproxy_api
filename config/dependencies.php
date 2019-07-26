@@ -18,9 +18,11 @@ use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
 use Psr\Container\ContainerInterface;
-use Symfony\Component\Cache\Simple\FilesystemCache;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Cache\Psr16Cache;
 use Slim\Http\Headers;
 use Slim\Http\StatusCode;
+use Slim\HttpCache\CacheProvider;
 
 return function (ContainerInterface $container) {
     $container['response'] = function () use ($container) {
@@ -48,6 +50,10 @@ return function (ContainerInterface $container) {
         return new NotFoundHandler();
     };
 
+    $container['cache'] = function () {
+        return new CacheProvider();
+    };
+
     $container['logger'] = function () {
         $rotating = new RotatingFileHandler(env('APP_LOG_FILENAME'));
         $rotating->setFormatter(
@@ -71,10 +77,12 @@ return function (ContainerInterface $container) {
 
     $container['middleware.cache'] = function () use ($container) {
         return new Cache(
-            new FilesystemCache(
-                env('CACHE_DIR_NAMESPACE'),
-                env('CACHE_LIFETIME'),
-                env('CACHE_DIRECTORY')
+            new Psr16Cache(
+                new FilesystemAdapter(
+                    env('CACHE_DIR_NAMESPACE'),
+                    env('CACHE_LIFETIME'),
+                    env('CACHE_DIRECTORY')
+                )
             )
         );
     };
@@ -85,5 +93,9 @@ return function (ContainerInterface $container) {
 
     $container['middleware.validate'] = function () {
         return new \Chanshige\WhoisProxy\Middleware\ValidateMiddleware();
+    };
+
+    $container['middleware.http.cache'] = function () {
+        return new \Slim\HttpCache\Cache('public', env('CACHE_LIFETIME'));
     };
 };

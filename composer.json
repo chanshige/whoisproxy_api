@@ -14,6 +14,7 @@
   "require": {
     "php": ">=7.3.0",
     "slim/slim": "^3.0",
+    "slim/http-cache": "^0.4",
     "chanshige/slim-bodycache": "*",
     "davidepastore/slim-validation": "*",
     "monolog/monolog": "^1.23",

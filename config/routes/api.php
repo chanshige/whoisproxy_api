@@ -57,5 +57,7 @@ return function (App $app) {
 
             return $validation($request, $response, $next);
         }
+    )->add(
+        $c->get('middleware.http.cache')
     );
 };
