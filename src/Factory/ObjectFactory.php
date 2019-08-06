@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Chanshige\WhoisProxy\Factory;
 
 use Slim\Http\StatusCode;

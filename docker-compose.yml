@@ -13,3 +13,9 @@ services:
       - "./.docker/conf/000-default.conf:/etc/apache2/sites-available/000-default.conf"
     environment:
       TZ: Asia/Tokyo
+
+  redis:
+    container_name: whoisproxy_api_redis
+    image: redis:latest
+    ports:
+      - "63790:6379"

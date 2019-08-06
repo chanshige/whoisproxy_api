@@ -19,6 +19,7 @@ use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Cache\Adapter\RedisAdapter;
 use Symfony\Component\Cache\Psr16Cache;
 use Slim\Http\Headers;
 use Slim\Http\StatusCode;
@@ -71,20 +72,28 @@ return function (ContainerInterface $container) {
         return $logger;
     };
 
+    $container['adapter.filesystem'] = function () {
+        return new FilesystemAdapter(
+            env('CACHE_DIR_NAMESPACE'),
+            env('CACHE_LIFETIME'),
+            env('CACHE_DIRECTORY')
+        );
+    };
+
+    $container['adapter.redis'] = function () {
+        return new RedisAdapter(
+            RedisAdapter::createConnection(env('REDIS_DSN')),
+            env('REDIS_NAMESPACE'),
+            env('REDIS_LIFETIME')
+        );
+    };
+
     $container['whois'] = function () {
         return new Whois(new Socket);
     };
 
     $container['middleware.cache'] = function () use ($container) {
-        return new Cache(
-            new Psr16Cache(
-                new FilesystemAdapter(
-                    env('CACHE_DIR_NAMESPACE'),
-                    env('CACHE_LIFETIME'),
-                    env('CACHE_DIRECTORY')
-                )
-            )
-        );
+        return new Cache(new Psr16Cache($container->get('adapter.redis')));
     };
 
     $container['middleware.cors'] = function () {
