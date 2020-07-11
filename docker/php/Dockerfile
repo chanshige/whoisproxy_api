@@ -3,7 +3,7 @@ FROM php:7.3.10-apache
 # php extensions install
 RUN apt-get update
 RUN apt-get install -y libicu-dev libpng-dev wget zip unzip dnsutils \
-      && docker-php-ext-install intl gd \
+      && docker-php-ext-install intl gd opcache \
       && cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
 
 # composer install
@@ -17,7 +17,7 @@ ENV COMPOSER_HOME /composer
 ENV PATH $PATH:/composer/vendor/bin
 
 # install xdebug
-RUN pecl install xdebug-beta \
+RUN pecl install xdebug \
       && docker-php-ext-enable xdebug
 
 # apache:mod_rewrite

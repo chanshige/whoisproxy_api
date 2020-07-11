@@ -4,13 +4,13 @@ services:
   php:
     container_name: whoisproxy_api
     image: php73-with-dnsutils
-    build: .docker
+    build: docker/php
     restart: always
     ports:
       - "8000:80"
     volumes:
-      - "./:/var/www/html"
-      - "./.docker/conf/000-default.conf:/etc/apache2/sites-available/000-default.conf"
+      - "./www:/var/www/html"
+      - "./docker/apache/000-default.conf:/etc/apache2/sites-available/000-default.conf"
     environment:
       TZ: Asia/Tokyo
 
