@@ -1,0 +1,85 @@
+{
+    "name": "chanshige/whois-proxy",
+    "type": "project",
+    "license": "proprietary",
+    "description": "",
+    "require": {
+        "php": ">=7.2.0",
+        "bear/package": "^1.10",
+        "symfony/dotenv": "^5.0"
+    },
+    "require-dev": {
+        "bear/devtools": "0.1.0",
+        "bear/qatools": "^1.9.6",
+        "doctrine/coding-standard": "^8.0",
+        "roave/security-advisories": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Chanshige\\WhoisProxy\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Chanshige\\WhoisProxy\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "@setup"
+        ],
+        "post-update-cmd": [
+            "@setup"
+        ],
+        "setup": [
+            "php bin/setup.php"
+        ],
+        "compile": "bear.compile 'Chanshige\\WhoisProxy' prod-app ./",
+        "test": [
+            "phpunit"
+        ],
+        "tests": [
+            "@cs",
+            "@qa",
+            "@test"
+        ],
+        "coverage": [
+            "php -dzend_extension=xdebug.so ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage"
+        ],
+        "pcov": [
+            "php -d pcov.enabled=1 ./vendor/bin/phpunit --coverage-text --coverage-html=build/coverage"
+        ],
+        "cs": [
+            "phpcs"
+        ],
+        "cs-fix": [
+            "phpcbf; if [ $? -eq 1 ]; then exit 0; fi"
+        ],
+        "qa": [
+            "phpmd src text ./phpmd.xml",
+            "phpstan analyse -c phpstan.neon --no-progress",
+            "psalm --no-progress"
+        ],
+        "serve": "php -dzend_extension=xdebug.so -S 127.0.0.1:8080 -t public",
+        "app": "php bin/app.php",
+        "page": "php bin/page.php"
+    },
+    "scripts-descriptions": {
+        "setup": "Setup the project",
+        "compile": "Compile scripts for the production. See http://bearsunday.github.io/manuals/1.0/en/production.html",
+        "test": "Run unit tests",
+        "tests": "Run tests and quality checks",
+        "coverage": "Generate test coverage report",
+        "pcov": "Generate test coverage report (pcov)",
+        "cs": "Checks the coding standard",
+        "cs-fix": "Fix the coding standard",
+        "qa": "Run quality checks",
+        "serve": "Start built-in server",
+        "app": "Request app resource",
+        "page": "Request page resource"
+    },
+    "config": {
+        "sort-packages": true,
+        "process-timeout": 0
+    }
+}
