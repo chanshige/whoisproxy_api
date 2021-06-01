@@ -93,7 +93,7 @@ return function (ContainerInterface $container) {
     };
 
     $container['middleware.cache'] = function () use ($container) {
-        return new Cache(new Psr16Cache($container->get('adapter.redis')));
+        return new Cache(new Psr16Cache($container->get('adapter.filesystem')));
     };
 
     $container['middleware.cors'] = function () {
