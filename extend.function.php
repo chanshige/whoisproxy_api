@@ -28,14 +28,11 @@ function env($key, $default = null)
     switch (strtolower($value)) {
         case 'true':
             return true;
-            break;
 
         case 'false':
             return false;
-            break;
 
         default:
             return $value;
-            break;
     }
 }

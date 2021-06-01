@@ -89,7 +89,7 @@ return function (ContainerInterface $container) {
     };
 
     $container['whois'] = function () {
-        return new Whois(new Socket);
+        return (new \Chanshige\WhoisFactory())->newInstance();
     };
 
     $container['middleware.cache'] = function () use ($container) {

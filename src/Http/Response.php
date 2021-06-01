@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Chanshige\WhoisProxy\Http;
 
+use RuntimeException;
 use Slim\Http\Body;
 use Slim\Http\StatusCode;
 
@@ -21,13 +22,13 @@ class Response extends \Slim\Http\Response
      * This method prepares the response object to return an HTTP Json
      * response to the client.
      *
-     * @param  mixed $data   The data
-     * @param  array $links  The links
-     * @param  int   $status The HTTP status code.
-     * @throws \RuntimeException
+     * @param mixed $data   The data
+     * @param array $links  The links
+     * @param int   $status The HTTP status code.
      * @return static
+     * @throws RuntimeException
      */
-    public function withHalJson($data, $links = [], $status = null)
+    public function withHalJson($data, $links = [], $status = null): Response
     {
         $response = $this->withBody(new Body(fopen('php://temp', 'r+')))
             ->withHeader('Content-Type', 'application/hal+json;charset=utf-8');

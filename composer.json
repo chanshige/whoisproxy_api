@@ -18,7 +18,7 @@
     "chanshige/slim-bodycache": "*",
     "davidepastore/slim-validation": "*",
     "monolog/monolog": "^1.23",
-    "chanshige/whois": "^3.0",
+    "chanshige/whois": "^5.0",
     "predis/predis": "^1.0",
     "symfony/cache": "^4.0",
     "symfony/process": "^4.0",
