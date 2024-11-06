@@ -21,7 +21,7 @@
     "chanshige/whois": "^5.0",
     "predis/predis": "^1.0",
     "symfony/cache": "^4.0",
-    "symfony/process": "^4.0",
+    "symfony/process": "^5.4",
     "vlucas/phpdotenv": "^2.0",
     "ext-json": "*",
     "ext-intl": "*"
